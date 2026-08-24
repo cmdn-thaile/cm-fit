@@ -15,7 +15,7 @@ model User {
   displayName  String
   dateOfBirth  DateTime?
   gender       String?       // "male" | "female"
-  avatarEmoji  String        @default("🐻")
+  avatarEmoji  String        @default("bear") // hood id: "bear", "panda", etc.
   avatarUrl    String?
   measurements Measurement[]
   achievements Achievement[]

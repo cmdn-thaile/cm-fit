@@ -36,6 +36,7 @@ export async function GET(request: Request) {
         id: true,
         displayName: true,
         avatarEmoji: true,
+        avatarUrl: true,
         measurements: {
           where: {
             date: { gte: startDate },
@@ -64,6 +65,7 @@ export async function GET(request: Request) {
           userId: user.id,
           displayName: user.displayName,
           avatarEmoji: user.avatarEmoji,
+          avatarUrl: user.avatarUrl,
           measurementCount,
           weightChange, // negative = lost weight (good), positive = gained (bad)
         };

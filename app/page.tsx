@@ -18,11 +18,13 @@ import { Plus, Scale, Ruler, Activity, Hash } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { MascotCard } from "@/components/ui/MascotCard";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 
 interface UserProfile {
   id: string;
   displayName: string;
   avatarEmoji: string;
+  avatarUrl?: string | null;
   email: string;
   dateOfBirth?: string;
   age?: { years: number; months: number } | null;
@@ -127,7 +129,12 @@ export default function DashboardPage() {
     >
       {/* Welcome */}
       <motion.div variants={item} className="flex items-center gap-3">
-        <span className="text-4xl">{user?.avatarEmoji || "🐻"}</span>
+        <UserAvatar
+          avatarUrl={user?.avatarUrl}
+          hood={user?.avatarEmoji || "bear"}
+          displayName={user?.displayName || ""}
+          size="lg"
+        />
         <div>
           <h2 className="text-xl font-heading font-bold">
             Xin chào, {user?.displayName}! 👋

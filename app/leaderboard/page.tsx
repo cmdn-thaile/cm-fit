@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { MascotCard } from "@/components/ui/MascotCard";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 
 type Period = "weekly" | "monthly";
 
@@ -10,6 +11,7 @@ interface LeaderboardEntry {
   userId: string;
   displayName: string;
   avatarEmoji: string;
+  avatarUrl?: string | null;
   measurementCount: number;
   weightChange: number;
 }
@@ -104,8 +106,8 @@ export default function LeaderboardPage() {
             >
               {/* 2nd place */}
               <div className="flex flex-col items-center">
-                <span className="text-3xl mb-1">{entries[1].avatarEmoji}</span>
-                <div className="bg-secondary/40 rounded-t-xl w-20 h-20 flex flex-col items-center justify-center">
+                <UserAvatar avatarUrl={entries[1].avatarUrl} hood={entries[1].avatarEmoji} displayName={entries[1].displayName} size="sm" />
+                <div className="bg-secondary/40 rounded-t-xl w-20 h-20 flex flex-col items-center justify-center mt-1">
                   <span className="text-xl">🥈</span>
                   <p className="text-[10px] font-bold truncate w-16 text-center">
                     {entries[1].displayName}
@@ -118,8 +120,8 @@ export default function LeaderboardPage() {
 
               {/* 1st place */}
               <div className="flex flex-col items-center">
-                <span className="text-4xl mb-1">{entries[0].avatarEmoji}</span>
-                <div className="bg-warning/40 rounded-t-xl w-24 h-28 flex flex-col items-center justify-center">
+                <UserAvatar avatarUrl={entries[0].avatarUrl} hood={entries[0].avatarEmoji} displayName={entries[0].displayName} size="md" />
+                <div className="bg-warning/40 rounded-t-xl w-24 h-28 flex flex-col items-center justify-center mt-1">
                   <span className="text-2xl">🥇</span>
                   <p className="text-xs font-bold truncate w-20 text-center">
                     {entries[0].displayName}
@@ -132,8 +134,8 @@ export default function LeaderboardPage() {
 
               {/* 3rd place */}
               <div className="flex flex-col items-center">
-                <span className="text-3xl mb-1">{entries[2].avatarEmoji}</span>
-                <div className="bg-accent-light/40 rounded-t-xl w-20 h-16 flex flex-col items-center justify-center">
+                <UserAvatar avatarUrl={entries[2].avatarUrl} hood={entries[2].avatarEmoji} displayName={entries[2].displayName} size="sm" />
+                <div className="bg-accent-light/40 rounded-t-xl w-20 h-16 flex flex-col items-center justify-center mt-1">
                   <span className="text-xl">🥉</span>
                   <p className="text-[10px] font-bold truncate w-16 text-center">
                     {entries[2].displayName}
@@ -176,7 +178,7 @@ export default function LeaderboardPage() {
                   </div>
 
                   {/* Avatar */}
-                  <span className="text-2xl">{entry.avatarEmoji}</span>
+                  <UserAvatar avatarUrl={entry.avatarUrl} hood={entry.avatarEmoji} displayName={entry.displayName} size="sm" />
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">

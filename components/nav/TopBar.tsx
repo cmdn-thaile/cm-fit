@@ -1,43 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import { UserAvatar } from "@/components/ui/UserAvatar";
+import { onProfileUpdate } from "@/lib/events";
+
+interface UserData {
+  displayName: string;
+  avatarUrl?: string | null;
+  avatarEmoji?: string;
+}
 
 export function TopBar() {
-  const [avatarEmoji, setAvatarEmoji] = useState("🐻");
+  const [user, setUser] = useState<UserData | null>(null);
 
-  useEffect(() => {
+  const fetchUser = useCallback(() => {
     fetch("/api/users/me")
       .then((res) => res.json())
       .then((data) => {
-        if (data.avatarEmoji) setAvatarEmoji(data.avatarEmoji);
+        if (data.displayName) setUser(data);
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    fetchUser();
+    // Re-fetch when profile is updated anywhere in the app
+    const unsubscribe = onProfileUpdate(fetchUser);
+    return () => { unsubscribe(); };
+  }, [fetchUser]);
 
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex items-center justify-between max-w-lg mx-auto px-4 h-14">
         {/* App name with mascot */}
-        <div className="flex items-center gap-2">
-          <span className="text-2xl" role="img" aria-label="bear mascot">
-            🐻
-          </span>
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-2xl">🐻</span>
           <h1 className="font-heading text-lg font-bold text-foreground">
             KiddyFit
           </h1>
-        </div>
+        </Link>
 
-        {/* User avatar emoji */}
-        <div
-          className={cn(
-            "flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200",
-            "bg-muted hover:bg-border"
-          )}
-          aria-label="Hồ sơ của bạn"
-        >
-          <span className="text-xl">{avatarEmoji}</span>
-        </div>
+        {/* User avatar with hood */}
+        <Link href="/profile">
+          <UserAvatar
+            avatarUrl={user?.avatarUrl}
+            hood={user?.avatarEmoji || "bear"}
+            displayName={user?.displayName || ""}
+            size="sm"
+          />
+        </Link>
       </div>
     </header>
   );

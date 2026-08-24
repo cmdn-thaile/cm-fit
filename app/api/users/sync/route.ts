@@ -17,6 +17,7 @@ export async function POST(request: Request) {
       update: {
         email: session.user.email,
         displayName: session.user.name || session.user.email,
+        avatarUrl: session.user.picture || undefined,
         ...(dateOfBirth && { dateOfBirth: new Date(dateOfBirth) }),
         ...(gender && { gender }),
         ...(avatarEmoji && { avatarEmoji }),
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
         auth0Id: session.user.sub,
         email: session.user.email,
         displayName: session.user.name || session.user.email,
+        avatarUrl: session.user.picture || null,
         ...(dateOfBirth && { dateOfBirth: new Date(dateOfBirth) }),
         ...(gender && { gender }),
         ...(avatarEmoji && { avatarEmoji }),

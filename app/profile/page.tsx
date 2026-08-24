@@ -7,11 +7,15 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Edit3, Save, LogOut, Calendar, User as UserIcon, Mail } from "lucide-react";
 import { MascotCard } from "@/components/ui/MascotCard";
+import { UserAvatar } from "@/components/ui/UserAvatar";
+import { HOODS } from "@/lib/hoods";
+import { emitProfileUpdate } from "@/lib/events";
 
 interface UserProfile {
   id: string;
   displayName: string;
   avatarEmoji: string;
+  avatarUrl?: string | null;
   email: string;
   dateOfBirth: string;
   gender: string;
@@ -29,11 +33,7 @@ interface EditFormData {
   avatarEmoji: string;
 }
 
-const EMOJI_OPTIONS = [
-  "🐻", "🐼", "🦊", "🐶", "🐱", "🐰", "🦁", "🐯",
-  "🐸", "🐧", "🦄", "🐝", "🦋", "🐢", "🐳", "🌸",
-  "⭐", "🌈", "🎀", "🎯", "🚀", "💎", "🌻", "🍀",
-];
+const HOOD_OPTIONS = HOODS;
 
 export default function ProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -55,7 +55,7 @@ export default function ProfilePage() {
             ? format(new Date(data.dateOfBirth), "yyyy-MM-dd")
             : "",
           gender: data.gender || "male",
-          avatarEmoji: data.avatarEmoji || "🐻",
+          avatarEmoji: data.avatarEmoji || "bear",
         });
       })
       .catch(console.error)
@@ -74,6 +74,7 @@ export default function ProfilePage() {
       const updated = await res.json();
       setUser(updated);
       setEditing(false);
+      emitProfileUpdate();
     } catch (err) {
       console.error(err);
     } finally {
@@ -98,16 +99,20 @@ export default function ProfilePage() {
       animate={{ opacity: 1, y: 0 }}
     >
       {/* Avatar & Name */}
-      <div className="text-center">
+      <div className="text-center flex flex-col items-center">
         <motion.div
-          className="text-7xl mb-3"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", bounce: 0.5 }}
         >
-          {user.avatarEmoji || "🐻"}
+          <UserAvatar
+            avatarUrl={user.avatarUrl}
+            hood={user.avatarEmoji || "bear"}
+            displayName={user.displayName}
+            size="xl"
+          />
         </motion.div>
-        <h2 className="text-2xl font-heading font-bold">{user.displayName}</h2>
+        <h2 className="text-2xl font-heading font-bold mt-3">{user.displayName}</h2>
         <p className="text-sm text-muted-foreground">{user.email}</p>
       </div>
 
@@ -177,22 +182,30 @@ export default function ProfilePage() {
         >
           <h3 className="font-heading font-bold">Chỉnh sửa hồ sơ</h3>
 
-          {/* Avatar Emoji Picker */}
+          {/* Hood Picker */}
           <div>
-            <label className="label">Avatar</label>
-            <div className="grid grid-cols-8 gap-2">
-              {EMOJI_OPTIONS.map((emoji) => (
+            <label className="label">Mũ thú cưng</label>
+            <div className="grid grid-cols-4 gap-3">
+              {HOOD_OPTIONS.map((hood) => (
                 <button
-                  key={emoji}
+                  key={hood.id}
                   type="button"
-                  onClick={() => setValue("avatarEmoji", emoji)}
-                  className={`text-2xl p-1.5 rounded-xl transition-all ${
-                    selectedEmoji === emoji
-                      ? "bg-primary-light/50 ring-2 ring-primary scale-110"
-                      : "hover:bg-muted"
+                  onClick={() => setValue("avatarEmoji", hood.id)}
+                  className={`flex flex-col items-center p-2 rounded-xl transition-all ${
+                    selectedEmoji === hood.id
+                      ? "bg-primary-light/50 ring-2 ring-primary scale-105"
+                      : "bg-muted hover:bg-border"
                   }`}
                 >
-                  {emoji}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={hood.image}
+                    alt={hood.name}
+                    className="w-14 h-14 object-contain"
+                  />
+                  <span className="text-[10px] mt-1 font-medium text-muted-foreground">
+                    {hood.name}
+                  </span>
                 </button>
               ))}
             </div>
