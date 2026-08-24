@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🐻 KiddyFit
 
-## Getting Started
+Ứng dụng theo dõi cân nặng và chiều cao cho trẻ em — giao diện dễ thương, pastel, đầy animal mascot.
 
-First, run the development server:
+## ✨ Tính năng
+
+- 📊 Dashboard trực quan với chart (cân nặng, chiều cao, BMI theo thời gian)
+- 👶 Quản lý nhiều trẻ cùng lúc
+- 📝 Ghi nhận measurement nhanh chóng
+- 🏆 Leaderboard hàng tháng
+- 🎖️ Achievement / Gamification (streak, growth spurt, ...)
+- 🔐 Đăng nhập qua Auth0
+- 📱 Responsive, mobile-first
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| Auth | Auth0 (@auth0/nextjs-auth0) |
+| ORM | Prisma 5 |
+| Database | MongoDB |
+| UI | Tailwind CSS + custom pastel theme |
+| Charts | Recharts |
+| Forms | React Hook Form + Zod |
+| Animation | Framer Motion |
+| Icons | Lucide React |
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- MongoDB instance (MongoDB Atlas recommended)
+- Auth0 account
+
+### Setup
 
 ```bash
+# 1. Install dependencies
+npm install
+
+# 2. Copy environment variables
+cp .env.example .env
+# Fill in your MongoDB URL, Auth0 credentials
+
+# 3. Generate Prisma client
+npx prisma generate
+
+# 4. Push schema to database
+npx prisma db push
+
+# 5. Run dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+kiddyfit/
+├── app/
+│   ├── page.tsx                  → Dashboard (charts, stats)
+│   ├── children/
+│   │   ├── page.tsx              → Children list
+│   │   ├── new/page.tsx          → Add child form
+│   │   └── [id]/
+│   │       ├── page.tsx          → Child detail + measurements
+│   │       └── measure/page.tsx  → Add measurement form
+│   ├── achievements/page.tsx     → Gamification badges
+│   ├── leaderboard/page.tsx      → Monthly leaderboard
+│   ├── profile/page.tsx          → User profile
+│   └── api/
+│       ├── users/sync/           → Auth0 user sync
+│       ├── children/             → CRUD
+│       ├── children/[id]/measurements/ → Measurements + BMI
+│       ├── children/[id]/achievements/ → Badges
+│       └── leaderboard/          → Monthly ranking
+├── components/
+│   ├── nav/                      → BottomNav, TopBar
+│   └── ui/                       → MascotCard
+├── lib/
+│   ├── prisma.ts                 → DB singleton
+│   ├── auth0.ts                  → Auth helpers
+│   ├── validators.ts             → Zod schemas
+│   └── utils.ts                  → cn() helper
+└── prisma/
+    └── schema.prisma             → Data models
+```
 
-## Learn More
+## 🎨 Design
 
-To learn more about Next.js, take a look at the following resources:
+- Pastel palette: pink, lavender, mint, cream
+- Animal mascot emojis: 🐻🐶🐱🐰🦁🦊🐼🐨🦉🐸
+- Rounded cards with soft shadows
+- Mobile-first bottom navigation
+- Framer Motion page transitions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 Notes on BMI
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> BMI của trẻ nên được đánh giá theo tuổi + giới tính + BMI-for-age percentile, không nên dùng ngưỡng BMI người lớn để kết luận thừa/thiếu cân.
 
-## Deploy on Vercel
+Ứng dụng tính BMI đơn giản (weight / height²) để theo dõi xu hướng. Kết quả nên được thảo luận với bác sĩ.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

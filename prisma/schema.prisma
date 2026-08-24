@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Each user IS a kid — they track their own measurements
+model User {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  auth0Id      String        @unique
+  email        String        @unique
+  displayName  String
+  dateOfBirth  DateTime?
+  gender       String?       // "male" | "female"
+  avatarEmoji  String        @default("🐻")
+  avatarUrl    String?
+  measurements Measurement[]
+  achievements Achievement[]
+  createdAt    DateTime      @default(now())
+}
+
+model Measurement {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  weight    Float    // kg
+  height    Float    // cm
+  bmi       Float?   // calculated
+  note      String?
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime
+  createdAt DateTime @default(now())
+}
+
+model Achievement {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  type     String   // "first_measurement", "streak_7", "streak_30", "growth_spurt", "consistent"
+  title    String
+  emoji    String
+  userId   String   @db.ObjectId
+  user     User     @relation(fields: [userId], references: [id])
+  earnedAt DateTime @default(now())
+}
