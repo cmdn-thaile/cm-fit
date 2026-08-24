@@ -27,7 +27,7 @@ function computeAge(dateOfBirth: Date): { years: number; months: number } {
   return { years, months };
 }
 
-export async function GET() {
+export async function GET(_request: Request) {
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {

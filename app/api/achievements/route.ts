@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth0";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(_request: Request) {
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) {

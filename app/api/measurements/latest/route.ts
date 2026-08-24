@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
  * Returns the most recent measurement for the current user.
  * Sorted by date DESC (not createdAt) — source of truth for "latest".
  */
-export async function GET() {
+export async function GET(_request: Request) {
   try {
     const user = await getCurrentUser();
     if (!user) {
